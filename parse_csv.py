@@ -9,7 +9,7 @@ doc = csv.reader(open('boxes.csv'), dialect='excel', delimiter='\t')
 for row in doc:
     if not head:
         head = row
-        newrow = row
+        newrow = ['atlas_id','created_at','provider']
         newrow.extend(['lat','lon','width','height'])
         print ','.join(newrow)
     else:
