@@ -2,6 +2,8 @@
 
 import csv
 
+ndigits = 4 # how many digits to round lat/lon coordinates. 4 is about 10m precision
+
 head = None
 doc = csv.reader(open('boxes.csv'), dialect='excel', delimiter='\t')
 for row in doc:
@@ -11,14 +13,14 @@ for row in doc:
         newrow.extend(['lat','lon','width','height'])
         print ','.join(newrow)
     else:
-        west = float(row[head.index('west')])
-        south = float(row[head.index('south')])
-        east = float(row[head.index('east')])
-        north = float(row[head.index('north')])
-        lat = (north + south) / 2
-        height = north - south
-        lon = (east + west) / 2
-        width = east - west
+        west = round(float(row[head.index('west')]),ndigits)
+        south = round(float(row[head.index('south')]),ndigits)
+        east = round(float(row[head.index('east')]),ndigits)
+        north = round(float(row[head.index('north')]),ndigits)
+        lat = round((north + south) / 2,ndigits)
+        height = round(north - south,ndigits)
+        lon = round((east + west) / 2,ndigits)
+        width = round(east - west,ndigits)
 
         if north > 90 or north < -90 or west > 180 or west < -180:
             continue
@@ -27,6 +29,6 @@ for row in doc:
         if lat > 90 or lat < -90 or lon > 180 or lon < -180:
             continue
 
-        newrow = row
+        newrow = [row[head.index('atlas_id')],row[head.index('created_at')],row[head.index('provider')]]
         newrow.extend([str(lat),str(lon),str(width),str(height)])
         print ','.join(newrow)
