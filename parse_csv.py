@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import csv
+import time
 
 ndigits = 4 # how many digits to round lat/lon coordinates. 4 is about 10m precision
 
@@ -9,7 +10,7 @@ doc = csv.reader(open('boxes.csv'), dialect='excel', delimiter='\t')
 for row in doc:
     if not head:
         head = row
-        newrow = ['atlas_id','created_at','provider']
+        newrow = ['atlas_id','timestamp','provider']
         newrow.extend(['lat','lon','width','height'])
         print ','.join(newrow)
     else:
@@ -29,6 +30,9 @@ for row in doc:
         if lat > 90 or lat < -90 or lon > 180 or lon < -180:
             continue
 
-        newrow = [row[head.index('atlas_id')],row[head.index('created_at')],row[head.index('provider')]]
+        #date = row[head.index('created_at')].split()[0]
+        date = int(time.mktime(time.strptime(row[head.index('created_at')],"%Y-%m-%d %H:%M:%S")))
+
+        newrow = [row[head.index('atlas_id')],str(date),row[head.index('provider')]]
         newrow.extend([str(lat),str(lon),str(width),str(height)])
         print ','.join(newrow)
